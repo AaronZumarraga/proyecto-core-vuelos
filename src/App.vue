@@ -1,10 +1,24 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/">Inicio</router-link> |
+    <router-link to="/Acerca de">Acerca de</router-link> |
+    <router-link to="/Reservas">Reservas</router-link> |
+    <router-link to="/Inicio de sesion">Inicio de sesion</router-link>
   </nav>
-  <router-view/>
+  <router-view />
+  <Footer />
 </template>
+
+<script>
+import Footer from '@/components/Footer.vue'
+
+export default {
+  name: 'App',
+  components: {
+    Footer
+  }
+}
+</script>
 
 <style>
 #app {
