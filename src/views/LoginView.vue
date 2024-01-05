@@ -25,8 +25,18 @@
       <form v-else @submit.prevent="register">
       <h2>Registro</h2>
 
-<!-- Nuevos campos para el registro -->
-<div class="form-group">
+      <div class="form-group">
+        <label for="newUsername">Nombre de usuario:</label>
+        <input v-model="newUsername" type="text" id="newUsername" required />
+      </div>
+
+      <div class="form-group">
+        <label for="newPassword">Contraseña:</label>
+        <input v-model="newPassword" type="password" id="newPassword" required />
+      </div>
+
+      <!-- Nuevos campos para el registro -->
+      <div class="form-group">
         <label for="newName">Nombre:</label>
         <input v-model="newName" type="text" id="newName" required />
       </div>
@@ -48,18 +58,6 @@
       <!-- Fin de nuevos campos -->
 
       <div class="form-group">
-        <label for="newUsername">Nombre de usuario:</label>
-        <input v-model="newUsername" type="text" id="newUsername" required />
-      </div>
-
-      <div class="form-group">
-        <label for="newPassword">Contraseña:</label>
-        <input v-model="newPassword" type="password" id="newPassword" required />
-      </div>
-
-      
-
-      <div class="form-group">
         <button type="submit">Registrarse</button>
       </div>
 
@@ -71,10 +69,35 @@
   </template>
   
   <script>
-  
+  export default {
+    data() {
+      return {
+        username: "",
+        password: "",
+        newUsername: "",
+        newPassword: "",
+        registerMode: false,
+      };
+    },
+    methods: {
+      login() {
+        // Lógica para procesar la autenticación
+        console.log("Iniciando sesión con:", this.username);
+      },
+      register() {
+        // Lógica para procesar el registro
+        console.log("Registrando nuevo usuario:", this.newUsername);
+        // Puedes enviar la información al backend para manejar el registro
+      },
+      toggleRegisterMode() {
+        // Alternar entre los modos de inicio de sesión y registro
+        this.registerMode = !this.registerMode;
+      },
+    },
+  };
   </script>
   
-  <style>
+  <style scoped>
   /* Estilos específicos para el formulario de inicio de sesión y registro */
   /* Puedes agregar estilos según tus preferencias */
   </style>
