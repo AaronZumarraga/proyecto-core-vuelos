@@ -23,26 +23,48 @@
       </form>
   
       <form v-else @submit.prevent="register">
-        <h2>Registro</h2>
-        
-        <div class="form-group">
-          <label for="newUsername">Nombre de usuario:</label>
-          <input v-model="newUsername" type="text" id="newUsername" required />
-        </div>
-        
-        <div class="form-group">
-          <label for="newPassword">Contraseña:</label>
-          <input v-model="newPassword" type="password" id="newPassword" required />
-        </div>
-        
-        <div class="form-group">
-          <button type="submit">Registrarse</button>
-        </div>
-  
-        <p>
-          ¿Ya tienes una cuenta? <a href="#" @click.prevent="toggleRegisterMode">Iniciar Sesión</a>
-        </p>
-      </form>
+      <h2>Registro</h2>
+
+      <div class="form-group">
+        <label for="newUsername">Nombre de usuario:</label>
+        <input v-model="newUsername" type="text" id="newUsername" required />
+      </div>
+
+      <div class="form-group">
+        <label for="newPassword">Contraseña:</label>
+        <input v-model="newPassword" type="password" id="newPassword" required />
+      </div>
+
+      <!-- Nuevos campos para el registro -->
+      <div class="form-group">
+        <label for="newName">Nombre:</label>
+        <input v-model="newName" type="text" id="newName" required />
+      </div>
+
+      <div class="form-group">
+        <label for="newLastName">Apellido:</label>
+        <input v-model="newLastName" type="text" id="newLastName" required />
+      </div>
+
+      <div class="form-group">
+        <label for="newEmail">Correo Electrónico:</label>
+        <input v-model="newEmail" type="email" id="newEmail" required />
+      </div>
+
+      <div class="form-group">
+        <label for="newPhone">Teléfono:</label>
+        <input v-model="newPhone" type="tel" id="newPhone" required />
+      </div>
+      <!-- Fin de nuevos campos -->
+
+      <div class="form-group">
+        <button type="submit">Registrarse</button>
+      </div>
+
+      <p>
+        ¿Ya tienes una cuenta? <a href="#" @click.prevent="toggleRegisterMode">Iniciar Sesión</a>
+      </p>
+    </form>
     </div>
   </template>
   
