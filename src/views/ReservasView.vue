@@ -99,6 +99,7 @@
 
 
 
+
     </div>
   </div>
 </template>
@@ -251,11 +252,6 @@ export default {
           // Puedes agregar lógica adicional si es necesario
         })
         .catch(error => console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', error));
-    },
-
-    calcularSumatoriaPrecios() {
-      // Calcular la sumatoria de precios
-      this.sumatoriaPrecios = this.aerolineasConMasReservas.reduce((total, aerolinea) => total + aerolinea.TotalPrecio, 0);
     },
 
 
