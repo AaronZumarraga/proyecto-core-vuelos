@@ -84,6 +84,7 @@
           <li v-for="(aerolinea, index) in aerolineasConMasReservas" :key="index">
             <strong>Aerolínea:</strong> {{ aerolinea.Aerolinea }}<br>
             <strong>Total Reservas:</strong> {{ aerolinea.TotalReservas }}<br>
+            <strong>Total Precio:</strong> {{ aerolinea.TotalPrecio }}<br>
             <hr>
           </li>
         </ul>
@@ -125,6 +126,7 @@ export default {
       opcionesAerolinea: [],
       reservas: [],
       aerolineasConMasReservas: [],
+      sumaTotalPrecios: [],
     };
   },
   methods: {
@@ -239,15 +241,21 @@ export default {
     mostrarAerolineasConMasReservas() {
       const { fechaInicio, fechaFin } = this;
 
-      // Realizar la llamada a la API para obtener las aerolíneas con más reservas
+      // Realizar la llamada a la API para obtener las aerolíneas con más reservas y la sumatoria de precios
       fetch(`http://localhost:3000/api/aerolineasConMasReservas?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`)
         .then(response => response.json())
         .then(data => {
           this.aerolineasConMasReservas = data;
-          console.log('Aerolíneas con más reservas obtenidas con éxito:', this.aerolineasConMasReservas);
+          this.calcularSumatoriaPrecios(); // Calcular la sumatoria de precios
+          console.log('Aerolíneas con más reservas y sumatoria de precios obtenidas con éxito:', this.aerolineasConMasReservas, this.sumatoriaPrecios);
           // Puedes agregar lógica adicional si es necesario
         })
-        .catch(error => console.error('Error al obtener aerolíneas con más reservas:', error));
+        .catch(error => console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', error));
+    },
+
+    calcularSumatoriaPrecios() {
+      // Calcular la sumatoria de precios
+      this.sumatoriaPrecios = this.aerolineasConMasReservas.reduce((total, aerolinea) => total + aerolinea.TotalPrecio, 0);
     },
 
 
@@ -265,6 +273,7 @@ export default {
     this.obtenerOpcionesPrecio();
     this.obtenerOpcionesAerolinea();
     this.verReservas();
+    this.mostrarAerolineasConMasReservas();
   }
 }
 </script>
