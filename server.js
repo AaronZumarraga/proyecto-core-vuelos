@@ -174,27 +174,27 @@ app.post('/api/inicio-sesion', (req, res) => {
 
 
   app.get('/api/aerolineasConMasReservas', (req, res) => {
-    const { fechaInicio, fechaFin } = req.query;
-  
-    const sql = `
-      SELECT Aerolinea, COUNT(*) AS TotalReservas, SUM(Precio) AS TotalPrecio
-      FROM Reserva
-      WHERE Fecha BETWEEN ? AND ?
-      GROUP BY Aerolinea
-      ORDER BY TotalReservas DESC
-      LIMIT 5;  -- Puedes ajustar este límite según tus necesidades
-    `;
-  
-    connection.query(sql, [fechaInicio, fechaFin], (err, results) => {
-      if (err) {
-        console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', err);
-        res.status(500).send('Error al obtener aerolíneas con más reservas y sumatoria de precios');
-      } else {
-        res.json(results);
-      }
-    });
+  const { fechaInicio, fechaFin } = req.query;
+
+  const sql = `
+    SELECT Aerolinea, COUNT(*) AS TotalReservas, SUM(Precio) AS TotalPrecio
+    FROM Reserva
+    WHERE Fecha BETWEEN ? AND ?
+    GROUP BY Aerolinea
+    ORDER BY TotalReservas DESC
+    LIMIT 5;  -- Puedes ajustar este límite según tus necesidades
+  `;
+
+  connection.query(sql, [fechaInicio, fechaFin], (err, results) => {
+    if (err) {
+      console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', err);
+      res.status(500).send('Error al obtener aerolíneas con más reservas y sumatoria de precios');
+    } else {
+      res.json(results);
+    }
   });
-  
+});
+
   
   
   
