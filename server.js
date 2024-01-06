@@ -43,6 +43,30 @@ app.post('/api/registro', (req, res) => {
   });
 });
 
+// Endpoint de inicio de sesión
+app.post('/api/inicio-sesion', (req, res) => {
+    const { nombreUsuario, contrasena } = req.body;
+  
+    // Verificar credenciales en la base de datos
+    const sql = 'SELECT * FROM Pasajero WHERE Nombre_Usuario = ? AND Contrasena = ?';
+    connection.query(sql, [nombreUsuario, contrasena], (err, results) => {
+      if (err) {
+        console.error('Error al verificar credenciales en la base de datos:', err);
+        res.status(500).send('Error interno del servidor');
+      } else {
+        if (results.length > 0) {
+          // Usuario autenticado correctamente
+          console.log('Usuario autenticado con éxito');
+          res.status(200).send('Usuario autenticado con éxito');
+        } else {
+          // Credenciales incorrectas
+          console.log('Credenciales incorrectas. Por favor, regístrese.');
+          res.status(401).send('Credenciales incorrectas. Por favor, regístrese.');
+        }
+      }
+    });
+  });  
+
 app.listen(port, () => {
   console.log(`Servidor Node.js en ejecución en el puerto ${port}`);
 });

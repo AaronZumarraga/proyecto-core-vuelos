@@ -56,7 +56,7 @@
         <label for="newPassword">Contraseña:</label>
         <input v-model="newPassword" type="password" id="newPassword" required />
       </div>
-      
+
 
       <div class="form-group">
         <button type="submit">Registrarse</button>
@@ -93,10 +93,33 @@ export default {
   },
   methods: {
     // Método para manejar el inicio de sesión
-    login() {
-      // Lógica para procesar la autenticación
-      console.log("Iniciando sesión con:", this.username);
-    },
+login() {
+  // Lógica para procesar la autenticación
+  const credenciales = {
+    nombreUsuario: this.username,
+    contrasena: this.password
+  };
+
+  // Envia la información al backend
+  axios.post('http://localhost:3000/api/inicio-sesion', credenciales)
+    .then(response => {
+      console.log('Usuario autenticado con éxito:', response.data);
+      // Aquí puedes redirigir o realizar alguna acción después de la autenticación exitosa
+    })
+    .catch(error => {
+      console.error('Error al autenticar usuario:', error);
+
+      if (error.response && error.response.status === 401) {
+        // Credenciales incorrectas
+        // Muestra un mensaje al usuario indicando que las credenciales son incorrectas
+        console.log('Credenciales incorrectas. Por favor, regístrese.');
+      } else {
+        // Otro tipo de error
+        // Puedes manejar otros tipos de errores según sea necesario
+      }
+    });
+},
+
     // Método para manejar el registro
     register() {
       // Construye el objeto del nuevo usuario con los datos del formulario
