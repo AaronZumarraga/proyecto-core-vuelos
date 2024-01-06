@@ -247,8 +247,8 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.aerolineasConMasReservas = data;
-          this.calcularSumatoriaPrecios(); // Calcular la sumatoria de precios
-          console.log('Aerolíneas con más reservas y sumatoria de precios obtenidas con éxito:', this.aerolineasConMasReservas, this.sumatoriaPrecios);
+          this.calcularSumaTotalPrecios(); // Calcular la sumatoria de precios
+          console.log('Aerolíneas con más reservas y sumatoria de precios obtenidas con éxito:', this.aerolineasConMasReservas, this.sumaTotalPrecios);
           // Puedes agregar lógica adicional si es necesario
         })
         .catch(error => console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', error));
