@@ -70,8 +70,6 @@ app.post('/api/inicio-sesion', (req, res) => {
 
 
 
-
-
   app.get('/api/obtenerOpcionesOrigen', (req, res) => {
     const query = 'SELECT DISTINCT Origen FROM Vuelo';
   
@@ -112,6 +110,7 @@ app.post('/api/inicio-sesion', (req, res) => {
       }
     });
   });
+
   app.get('/api/obtenerOpcionesPrecio', (req, res) => {
     const query = 'SELECT DISTINCT Precio FROM Vuelo';
   
@@ -153,8 +152,6 @@ app.post('/api/inicio-sesion', (req, res) => {
     });
   });
   
-    
-  
   app.get('/api/obtenerReservas', (req, res) => {
     const sql = 'SELECT * FROM Reserva';
   
@@ -168,15 +165,6 @@ app.post('/api/inicio-sesion', (req, res) => {
     });
   });
   
-  
-  
-  
-    
-
-
-
-
-
 app.listen(port, () => {
   console.log(`Servidor Node.js en ejecución en el puerto ${port}`);
 });
