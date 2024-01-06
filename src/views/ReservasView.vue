@@ -3,14 +3,18 @@
     <h2>Reservas</h2>
     <button @click="mostrarBuscarVuelos">Buscar vuelos</button>
     <button @click="mostrarVerReservas">Ver reservas</button>
+    <button @click="mostrarEstadisticas">Ver estadisticas</button>
 
     <!-- Contenido dinámico según la opción seleccionada -->
     <div v-if="mostrarContenido">
+
       <!-- Formulario de búsqueda de vuelos -->
       <section v-if="currentPage === 'buscar-vuelos'">
         <h2>Buscar Vuelos</h2>
+
         <!-- Formulario de búsqueda -->
         <form @submit.prevent="buscarVuelos">
+
           <!-- Campos de búsqueda -->
           <label for="origen">Origen:</label>
           <select v-model="busqueda.origen" required>
@@ -68,6 +72,16 @@
 
 
 
+
+      <section v-if="currentPage === 'ver-estadisticas'">
+  <h2>Estadísticas de Aerolíneas</h2>
+  
+</section>
+
+
+
+
+
     </div>
   </div>
 </template>
@@ -102,6 +116,10 @@ export default {
     mostrarVerReservas() {
       this.mostrarContenido = true;
       this.currentPage = 'ver-reservas';
+    },
+    mostrarEstadisticas() {
+      this.mostrarContenido = true;
+      this.currentPage = 'ver-estadisticas';
     },
     buscarVuelos() {
       // Lógica para manejar la búsqueda de vuelos
@@ -182,7 +200,6 @@ export default {
     },
 
 
-
     verReservas() {
       // Realizar la llamada a la API para obtener las reservas
       fetch('http://localhost:3000/api/obtenerReservas')
@@ -194,6 +211,16 @@ export default {
         })
         .catch(error => console.error('Error al obtener reservas:', error));
     },
+
+
+
+
+
+
+
+
+
+
 
 
 
