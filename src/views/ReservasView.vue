@@ -71,12 +71,28 @@
       </section>
 
 
+      <section v-if="currentPage === 'ver-aerolineas-con-mas-reservas'">
+        <h2>Aerolíneas con Más Reservas</h2>
+        <label for="start">Fecha de Inicio:</label>
+        <input type="date" v-model="fechaInicio" min="2024-01-01" max="2030-12-31" />
+        <br>
+        <label for="end">Fecha de Fin:</label>
+        <input type="date" v-model="fechaFin" min="2024-01-01" max="2030-12-31" />
+        <br>
+        <button @click="mostrarAerolineasConMasReservas">Mostrar Aerolíneas</button>
+        <ul>
+          <li v-for="(aerolinea, index) in aerolineasConMasReservas" :key="index">
+            <strong>Aerolínea:</strong> {{ aerolinea.Aerolinea }}<br>
+            <strong>Total Reservas:</strong> {{ aerolinea.TotalReservas }}<br>
+            <hr>
+          </li>
+        </ul>
+      </section>
 
 
-      <section v-if="currentPage === 'ver-estadisticas'">
-  <h2>Estadísticas de Aerolíneas</h2>
-  
-</section>
+
+
+
 
 
 
@@ -98,7 +114,9 @@ export default {
         destino: '',
         hora: '',
         precio: '',
-        aerolinea: ''
+        aerolinea: '',
+        fechaInicio: '',
+        fechaFin: '',
       },
       opcionesOrigen: [],
       opcionesDestino: [],
@@ -106,6 +124,7 @@ export default {
       opcionesPrecio: [],
       opcionesAerolinea: [],
       reservas: [],
+      aerolineasConMasReservas: [],
     };
   },
   methods: {
@@ -119,7 +138,7 @@ export default {
     },
     mostrarEstadisticas() {
       this.mostrarContenido = true;
-      this.currentPage = 'ver-estadisticas';
+      this.currentPage = 'ver-aerolineas-con-mas-reservas';
     },
     buscarVuelos() {
       // Lógica para manejar la búsqueda de vuelos
@@ -217,8 +236,19 @@ export default {
 
 
 
+    mostrarAerolineasConMasReservas() {
+      const { fechaInicio, fechaFin } = this;
 
-
+      // Realizar la llamada a la API para obtener las aerolíneas con más reservas
+      fetch(`http://localhost:3000/api/aerolineasConMasReservas?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`)
+        .then(response => response.json())
+        .then(data => {
+          this.aerolineasConMasReservas = data;
+          console.log('Aerolíneas con más reservas obtenidas con éxito:', this.aerolineasConMasReservas);
+          // Puedes agregar lógica adicional si es necesario
+        })
+        .catch(error => console.error('Error al obtener aerolíneas con más reservas:', error));
+    },
 
 
 
