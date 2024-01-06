@@ -13,39 +13,61 @@
         <form @submit.prevent="buscarVuelos">
           <!-- Campos de búsqueda -->
           <label for="origen">Origen:</label>
-          <input type="text" v-model="busqueda.origen" required>
+          <select v-model="busqueda.origen" required>
+            <option v-for="option in opcionesOrigen" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
 
           <label for="destino">Destino:</label>
-          <input type="text" v-model="busqueda.destino" required>
+          <select v-model="busqueda.destino" required>
+            <option v-for="option in opcionesDestino" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
 
-          <label for="fecha-salida">Fecha de Salida:</label>
-          <input type="date" v-model="busqueda.fechaSalida" required>
+          <label for="hora">Hora:</label>
+          <select v-model="busqueda.hora" required>
+            <option v-for="option in opcionesHora" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
 
-          <!-- Nuevos campos -->
-          <label for="precio">Precio Máximo:</label>
-          <input type="number" v-model="busqueda.precio" min="0">
-
-          <label for="asientos-disponibles">Asientos Disponibles:</label>
-          <input type="number" v-model="busqueda.asientosDisponibles" min="1">
+          <label for="precio">Precio:</label>
+          <select v-model="busqueda.precio" required>
+            <option v-for="option in opcionesPrecio" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
 
           <label for="aerolinea">Aerolínea:</label>
-          <input type="text" v-model="busqueda.aerolinea">
-
-          <label for="contacto">Contacto Aerolínea:</label>
-          <input type="text" v-model="busqueda.contacto">
-
-          <!-- Botón para enviar el formulario -->
-          <button type="submit">Buscar</button>
-          <button type="submit">Reservar</button>
+          <select v-model="busqueda.aerolinea" required>
+            <option v-for="option in opcionesAerolinea" :key="option" :value="option">
+              {{ option }}
+            </option>
+          </select>
+          <!-- Botón para hacer la reserva -->
+          <button type="button" @click="hacerReserva">Hacer Reserva</button>
         </form>
       </section>
 
-      <!-- Sección para mostrar las reservas -->
-      <section v-else-if="currentPage === 'ver-reservas'">
-        <!-- Lógica para mostrar las reservas -->
+      <section v-if="currentPage === 'ver-reservas'">
         <h2>Ver Reservas</h2>
-        <!-- Puedes agregar aquí la lógica y presentación para ver las reservas -->
+        <ul>
+          <li v-for="(reserva, index) in reservas" :key="index">
+            <strong>Origen:</strong> {{ reserva.Origen }}<br>
+            <strong>Destino:</strong> {{ reserva.Destino }}<br>
+            <strong>Hora:</strong> {{ reserva.Hora }}<br>
+            <strong>Precio:</strong> {{ reserva.Precio }}<br>
+            <strong>Aerolínea:</strong> {{ reserva.Aerolinea }}<br>
+            <strong>Nombre de Usuario:</strong> {{ reserva.Nombre_Usuario }}<br>
+            <hr>
+          </li>
+        </ul>
       </section>
+
+
+
     </div>
   </div>
 </template>
@@ -56,16 +78,20 @@ export default {
   data() {
     return {
       mostrarContenido: false,
-      currentPage: '', // Variable para mantener el estado de la página actual
+      currentPage: '',
       busqueda: {
         origen: '',
         destino: '',
-        fechaSalida: '',
-        precio: 0,
-        asientosDisponibles: 1,
-        aerolinea: '',
-        contacto: ''
-      }
+        hora: '',
+        precio: '',
+        aerolinea: ''
+      },
+      opcionesOrigen: [],
+      opcionesDestino: [],
+      opcionesHora: [],
+      opcionesPrecio: [],
+      opcionesAerolinea: [],
+      reservas: [],
     };
   },
   methods: {
@@ -80,7 +106,108 @@ export default {
     buscarVuelos() {
       // Lógica para manejar la búsqueda de vuelos
       console.log('Realizar búsqueda de vuelos con:', this.busqueda);
-    }
+    },
+
+    hacerReserva() {
+      // Lógica para manejar la acción de hacer reserva
+      console.log('Hacer reserva con:', this.busqueda);
+    },
+    obtenerOpcionesOrigen() {
+      fetch('http://localhost:3000/api/obtenerOpcionesOrigen') // Actualiza la URL según tu configuración del servidor
+        .then(response => response.json())
+        .then(data => {
+          this.opcionesOrigen = data;
+        })
+        .catch(error => console.error('Error al obtener opciones de origen:', error));
+    },
+    obtenerOpcionesDestino() {
+      fetch('http://localhost:3000/api/obtenerOpcionesDestino') // Actualiza la URL según tu configuración del servidor
+        .then(response => response.json())
+        .then(data => {
+          this.opcionesDestino = data;
+        })
+        .catch(error => console.error('Error al obtener opciones de destino:', error));
+    },
+    obtenerOpcionesHora() {
+      fetch('http://localhost:3000/api/obtenerOpcionesHora') // Actualiza la URL según tu configuración del servidor
+        .then(response => response.json())
+        .then(data => {
+          this.opcionesHora = data;
+        })
+        .catch(error => console.error('Error al obtener opciones de hora:', error));
+    },
+    obtenerOpcionesPrecio() {
+      fetch('http://localhost:3000/api/obtenerOpcionesPrecio') // Actualiza la URL según tu configuración del servidor
+        .then(response => response.json())
+        .then(data => {
+          this.opcionesPrecio = data;
+        })
+        .catch(error => console.error('Error al obtener opciones de precio:', error));
+    },
+    obtenerOpcionesAerolinea() {
+      fetch('http://localhost:3000/api/obtenerOpcionesAerolinea') // Actualiza la URL según tu configuración del servidor
+        .then(response => response.json())
+        .then(data => {
+          this.opcionesAerolinea = data;
+        })
+        .catch(error => console.error('Error al obtener opciones de nombre de Aerolínea:', error));
+    },
+    hacerReserva() {
+      const { origen, destino, hora, precio, aerolinea } = this.busqueda;
+
+      // Aquí puedes agregar la lógica para obtener el nombre de usuario del sistema de registro
+      const nombreUsuario = 'NombreDeUsuarioTemporal'; // Reemplaza con la lógica real para obtener el nombre de usuario
+
+      // Realizar la llamada a la API para insertar la reserva
+      fetch('http://localhost:3000/api/hacerReserva', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          origen,
+          destino,
+          hora,
+          precio,
+          aerolinea,
+          nombreUsuario,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Reserva realizada con éxito:', data);
+          // Aquí puedes agregar lógica adicional si es necesario, como mostrar un mensaje de éxito al usuario
+        })
+        .catch(error => console.error('Error al hacer reserva:', error));
+    },
+
+
+
+    verReservas() {
+      // Realizar la llamada a la API para obtener las reservas
+      fetch('http://localhost:3000/api/obtenerReservas')
+        .then(response => response.json())
+        .then(data => {
+          this.reservas = data;
+          console.log('Reservas obtenidas con éxito:', this.reservas);
+          // Puedes agregar lógica adicional si es necesario
+        })
+        .catch(error => console.error('Error al obtener reservas:', error));
+    },
+
+
+
+
+
+  },
+  mounted() {
+    // Llamada al método para obtener las opciones de origen al cargar el componente
+    this.obtenerOpcionesOrigen();
+    this.obtenerOpcionesDestino();
+    this.obtenerOpcionesHora();
+    this.obtenerOpcionesPrecio();
+    this.obtenerOpcionesAerolinea();
+    this.verReservas();
   }
 }
 </script>
