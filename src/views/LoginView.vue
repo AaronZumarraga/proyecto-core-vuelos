@@ -102,10 +102,10 @@ login() {
 
   // Envia la información al backend
   axios.post('http://localhost:3000/api/inicio-sesion', credenciales)
-    .then(response => {
-      console.log('Usuario autenticado con éxito:', response.data);
-      // Aquí puedes redirigir o realizar alguna acción después de la autenticación exitosa
-    })
+  .then(response => {
+  console.log('Usuario autenticado con éxito:', response.data);
+  // Aquí puedes redirigir o realizar alguna acción después de la autenticación exitosa
+})
     .catch(error => {
       console.error('Error al autenticar usuario:', error);
 
