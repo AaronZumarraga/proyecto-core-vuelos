@@ -91,15 +91,6 @@
       </section>
 
 
-
-
-
-
-
-
-
-
-
     </div>
   </div>
 </template>
@@ -236,9 +227,6 @@ export default {
 
 
 
-
-
-
     mostrarAerolineasConMasReservas() {
       const { fechaInicio, fechaFin } = this;
 
@@ -253,9 +241,6 @@ export default {
         })
         .catch(error => console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', error));
     },
-
-
-
 
 
 

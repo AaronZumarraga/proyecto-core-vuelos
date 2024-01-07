@@ -66,12 +66,6 @@ app.post('/api/inicio-sesion', (req, res) => {
       }
     });
   });  
-
-
-
-
-
-
   app.get('/api/obtenerOpcionesOrigen', (req, res) => {
     const query = 'SELECT DISTINCT Origen FROM Vuelo';
   
@@ -152,7 +146,6 @@ app.post('/api/inicio-sesion', (req, res) => {
       }
     });
   });
-    
   
   app.get('/api/obtenerReservas', (req, res) => {
     const sql = 'SELECT * FROM Reserva';
