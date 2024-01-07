@@ -66,10 +66,6 @@ app.post('/api/inicio-sesion', (req, res) => {
       }
     });
   });  
-
-
-
-
   app.get('/api/obtenerOpcionesOrigen', (req, res) => {
     const query = 'SELECT DISTINCT Origen FROM Vuelo';
   
@@ -110,7 +106,6 @@ app.post('/api/inicio-sesion', (req, res) => {
       }
     });
   });
-
   app.get('/api/obtenerOpcionesPrecio', (req, res) => {
     const query = 'SELECT DISTINCT Precio FROM Vuelo';
   
@@ -165,6 +160,48 @@ app.post('/api/inicio-sesion', (req, res) => {
     });
   });
   
+ 
+
+  
+
+
+
+  app.get('/api/aerolineasConMasReservas', (req, res) => {
+  const { fechaInicio, fechaFin } = req.query;
+
+  const sql = `
+    SELECT Aerolinea, COUNT(*) AS TotalReservas, SUM(Precio) AS TotalPrecio
+    FROM Reserva
+    WHERE Fecha BETWEEN ? AND ?
+    GROUP BY Aerolinea
+    ORDER BY TotalReservas DESC
+    LIMIT 5;  -- Puedes ajustar este límite según tus necesidades
+  `;
+
+  connection.query(sql, [fechaInicio, fechaFin], (err, results) => {
+    if (err) {
+      console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', err);
+      res.status(500).send('Error al obtener aerolíneas con más reservas y sumatoria de precios');
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+  
+  
+  
+  
+  
+  
+  
+
+
+  
+  
+
+
 app.listen(port, () => {
   console.log(`Servidor Node.js en ejecución en el puerto ${port}`);
 });
+

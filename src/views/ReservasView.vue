@@ -3,14 +3,18 @@
     <h2>Reservas</h2>
     <button @click="mostrarBuscarVuelos">Buscar vuelos</button>
     <button @click="mostrarVerReservas">Ver reservas</button>
+    <button @click="mostrarEstadisticas">Ver estadisticas</button>
 
     <!-- Contenido dinámico según la opción seleccionada -->
     <div v-if="mostrarContenido">
+
       <!-- Formulario de búsqueda de vuelos -->
       <section v-if="currentPage === 'buscar-vuelos'">
         <h2>Buscar Vuelos</h2>
+
         <!-- Formulario de búsqueda -->
         <form @submit.prevent="buscarVuelos">
+
           <!-- Campos de búsqueda -->
           <label for="origen">Origen:</label>
           <select v-model="busqueda.origen" required>
@@ -67,6 +71,25 @@
       </section>
 
 
+      <section v-if="currentPage === 'ver-aerolineas-con-mas-reservas'">
+        <h2>Aerolíneas con Más Reservas</h2>
+        <label for="start">Fecha de Inicio:</label>
+        <input type="date" v-model="fechaInicio" min="2024-01-01" max="2030-12-31" />
+        <br>
+        <label for="end">Fecha de Fin:</label>
+        <input type="date" v-model="fechaFin" min="2024-01-01" max="2030-12-31" />
+        <br>
+        <button @click="mostrarAerolineasConMasReservas">Mostrar Aerolíneas</button>
+        <ul>
+          <li v-for="(aerolinea, index) in aerolineasConMasReservas" :key="index">
+            <strong>Aerolínea:</strong> {{ aerolinea.Aerolinea }}<br>
+            <strong>Total Reservas:</strong> {{ aerolinea.TotalReservas }}<br>
+            <strong>Total Precio:</strong> {{ aerolinea.TotalPrecio }}<br>
+            <hr>
+          </li>
+        </ul>
+      </section>
+
 
     </div>
   </div>
@@ -84,7 +107,9 @@ export default {
         destino: '',
         hora: '',
         precio: '',
-        aerolinea: ''
+        aerolinea: '',
+        fechaInicio: '',
+        fechaFin: '',
       },
       opcionesOrigen: [],
       opcionesDestino: [],
@@ -92,6 +117,8 @@ export default {
       opcionesPrecio: [],
       opcionesAerolinea: [],
       reservas: [],
+      aerolineasConMasReservas: [],
+      sumaTotalPrecios: [],
     };
   },
   methods: {
@@ -102,6 +129,10 @@ export default {
     mostrarVerReservas() {
       this.mostrarContenido = true;
       this.currentPage = 'ver-reservas';
+    },
+    mostrarEstadisticas() {
+      this.mostrarContenido = true;
+      this.currentPage = 'ver-aerolineas-con-mas-reservas';
     },
     buscarVuelos() {
       // Lógica para manejar la búsqueda de vuelos
@@ -182,7 +213,6 @@ export default {
     },
 
 
-
     verReservas() {
       // Realizar la llamada a la API para obtener las reservas
       fetch('http://localhost:3000/api/obtenerReservas')
@@ -197,6 +227,22 @@ export default {
 
 
 
+    mostrarAerolineasConMasReservas() {
+      const { fechaInicio, fechaFin } = this;
+
+      // Realizar la llamada a la API para obtener las aerolíneas con más reservas y la sumatoria de precios
+      fetch(`http://localhost:3000/api/aerolineasConMasReservas?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`)
+        .then(response => response.json())
+        .then(data => {
+          this.aerolineasConMasReservas = data;
+          this.calcularSumaTotalPrecios(); // Calcular la sumatoria de precios
+          console.log('Aerolíneas con más reservas y sumatoria de precios obtenidas con éxito:', this.aerolineasConMasReservas, this.sumaTotalPrecios);
+          // Puedes agregar lógica adicional si es necesario
+        })
+        .catch(error => console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', error));
+    },
+
+
 
 
   },
@@ -208,6 +254,7 @@ export default {
     this.obtenerOpcionesPrecio();
     this.obtenerOpcionesAerolinea();
     this.verReservas();
+    this.mostrarAerolineasConMasReservas();
   }
 }
 </script>
