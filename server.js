@@ -132,6 +132,7 @@ app.post('/api/inicio-sesion', (req, res) => {
       }
     });
   });
+  
   app.post('/api/hacerReserva', (req, res) => {
     const { origen, destino, hora, precio, aerolinea, nombreUsuario } = req.body;
   

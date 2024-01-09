@@ -16,6 +16,8 @@
         <!-- Formulario de búsqueda -->
         <form @submit.prevent="buscarVuelos">
 
+          <label for="nombreUsuario">Nombre de Usuario:</label>
+          <input v-model="busqueda.nombreUsuario" type="text" required />
           <!-- Campos de búsqueda -->
           <label for="origen">Origen:</label>
           <select v-model="busqueda.origen" required>
@@ -134,6 +136,7 @@ export default {
         aerolinea: '',
         fechaInicio: '',
         fechaFin: '',
+        nombreUsuario: '',
       },
       opcionesOrigen: [],
       opcionesDestino: [],
@@ -212,6 +215,7 @@ export default {
         })
         .catch(error => console.error('Error al obtener opciones de nombre de Aerolínea:', error));
     },
+
     hacerReserva() {
       const { origen, destino, hora, precio, aerolinea } = this.busqueda;
 
