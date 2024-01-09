@@ -216,34 +216,57 @@ export default {
         .catch(error => console.error('Error al obtener opciones de nombre de Aerolínea:', error));
     },
 
+
+
+
+
+
+
     hacerReserva() {
-      const { origen, destino, hora, precio, aerolinea } = this.busqueda;
+  const { origen, destino, hora, precio, aerolinea, nombreUsuario } = this.busqueda;
 
-      // Aquí puedes agregar la lógica para obtener el nombre de usuario del sistema de registro
-      const nombreUsuario = 'NombreDeUsuarioTemporal'; // Reemplaza con la lógica real para obtener el nombre de usuario
+  // Realizar la validación del nombre de usuario
+  fetch(`http://localhost:3000/api/validarNombreUsuario?nombreUsuario=${nombreUsuario}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data.existeUsuario) {
+        // El nombre de usuario existe, proceder con la reserva
+        // Aquí puedes agregar lógica adicional si es necesario antes de realizar la reserva
 
-      // Realizar la llamada a la API para insertar la reserva
-      fetch('http://localhost:3000/api/hacerReserva', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          origen,
-          destino,
-          hora,
-          precio,
-          aerolinea,
-          nombreUsuario,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Reserva realizada con éxito:', data);
-          // Aquí puedes agregar lógica adicional si es necesario, como mostrar un mensaje de éxito al usuario
+        // Realizar la llamada a la API para insertar la reserva
+        fetch('http://localhost:3000/api/hacerReserva', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            origen,
+            destino,
+            hora,
+            precio,
+            aerolinea,
+            nombreUsuario,
+          }),
         })
-        .catch(error => console.error('Error al hacer reserva:', error));
-    },
+          .then(response => response.json())
+          .then(data => {
+            console.log('Reserva realizada con éxito:', data);
+            // Aquí puedes agregar lógica adicional si es necesario, como mostrar un mensaje de éxito al usuario
+          })
+          .catch(error => console.error('Error al hacer reserva:', error));
+      } else {
+        // El nombre de usuario no existe, muestra un mensaje al usuario
+        console.log('El nombre de usuario no existe. Por favor, regístrese.');
+      }
+    })
+    .catch(error => console.error('Error al validar nombre de usuario:', error));
+},
+
+
+
+
+
+
 
 
     verReservas() {
