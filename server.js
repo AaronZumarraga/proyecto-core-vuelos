@@ -195,6 +195,26 @@ app.post('/api/inicio-sesion', (req, res) => {
   
   
   
+app.get('/api/usuariosConMasReservas', (req, res) => {
+  const { fechaInicio, fechaFin } = req.query;
+
+  const sql = `
+    SELECT Nombre_Usuario, COUNT(*) as TotalReservas
+    FROM Reserva
+    WHERE Fecha BETWEEN ? AND ?
+    GROUP BY Nombre_Usuario
+    ORDER BY TotalReservas DESC
+    LIMIT 5;`;
+
+  connection.query(sql, [fechaInicio, fechaFin], (err, results) => {
+    if (err) {
+      console.error('Error al obtener usuarios con más reservas:', err);
+      res.status(500).send('Error al obtener usuarios con más reservas');
+    } else {
+      res.json(results);
+    }
+  });
+});
 
 
   

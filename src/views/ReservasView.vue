@@ -4,6 +4,7 @@
     <button @click="mostrarBuscarVuelos">Buscar vuelos</button>
     <button @click="mostrarVerReservas">Ver reservas</button>
     <button @click="mostrarEstadisticas">Ver estadisticas</button>
+    <button @click="mostrarUsuarios">Ver usuarios con reservas</button>
 
     <!-- Contenido dinámico según la opción seleccionada -->
     <div v-if="mostrarContenido">
@@ -91,6 +92,29 @@
       </section>
 
 
+
+
+
+      <section v-if="currentPage === 'ver-usuarios-con-mas-reservas'">
+        <h2>Usuarios con Más Reservas</h2>
+        <label for="start">Fecha de inicio:</label>
+        <input type="date" v-model="fechaInicio" name="start" min="2024-01-01" max="2030-12-31" />
+
+        <label for="end">Fecha de fin:</label>
+        <input type="date" v-model="fechaFin" name="end" min="2024-01-01" max="2030-12-31" />
+
+        <button @click="mostrarUsuariosConMasReservas">Mostrar Usuarios</button>
+
+        <li v-for="(usuario, index) in usuariosConMasReservas" :key="index">
+          <strong>Usuario:</strong> {{ usuario.Nombre_Usuario }}<br>
+          <strong>Total de Reservas:</strong> {{ usuario.TotalReservas }}<br>
+          <hr>
+        </li>
+
+      </section>
+
+
+
     </div>
   </div>
 </template>
@@ -119,6 +143,7 @@ export default {
       reservas: [],
       aerolineasConMasReservas: [],
       sumaTotalPrecios: [],
+      usuariosConMasReservas: [],
     };
   },
   methods: {
@@ -133,6 +158,10 @@ export default {
     mostrarEstadisticas() {
       this.mostrarContenido = true;
       this.currentPage = 'ver-aerolineas-con-mas-reservas';
+    },
+    mostrarUsuarios() {
+      this.mostrarContenido = true;
+      this.currentPage = 'ver-usuarios-con-mas-reservas';
     },
     buscarVuelos() {
       // Lógica para manejar la búsqueda de vuelos
@@ -220,7 +249,6 @@ export default {
         .then(data => {
           this.reservas = data;
           console.log('Reservas obtenidas con éxito:', this.reservas);
-          // Puedes agregar lógica adicional si es necesario
         })
         .catch(error => console.error('Error al obtener reservas:', error));
     },
@@ -237,11 +265,24 @@ export default {
           this.aerolineasConMasReservas = data;
           this.calcularSumaTotalPrecios(); // Calcular la sumatoria de precios
           console.log('Aerolíneas con más reservas y sumatoria de precios obtenidas con éxito:', this.aerolineasConMasReservas, this.sumaTotalPrecios);
-          // Puedes agregar lógica adicional si es necesario
         })
         .catch(error => console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', error));
     },
 
+
+
+
+
+    mostrarUsuariosConMasReservas() {
+      // Realizar la llamada a la API para obtener los usuarios con más reservas
+      fetch(`http://localhost:3000/api/usuariosConMasReservas?fechaInicio=${this.fechaInicio}&fechaFin=${this.fechaFin}`)
+        .then(response => response.json())
+        .then(data => {
+          this.usuariosConMasReservas = data;
+          console.log('Usuarios con más reservas:', this.usuariosConMasReservas);
+        })
+        .catch(error => console.error('Error al obtener usuarios con más reservas:', error));
+    },
 
 
 
