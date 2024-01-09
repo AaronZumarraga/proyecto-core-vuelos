@@ -132,6 +132,7 @@ app.post('/api/inicio-sesion', (req, res) => {
       }
     });
   });
+
   app.post('/api/hacerReserva', (req, res) => {
     const { origen, destino, hora, precio, aerolinea, nombreUsuario } = req.body;
   
@@ -146,6 +147,24 @@ app.post('/api/inicio-sesion', (req, res) => {
       }
     });
   });
+
+
+
+  app.get('/api/validarNombreUsuario', (req, res) => {
+    const { nombreUsuario } = req.query;
+  
+    const sql = 'SELECT COUNT(*) as existeUsuario FROM Pasajero WHERE Nombre_Usuario = ?';
+    
+    connection.query(sql, [nombreUsuario], (err, results) => {
+      if (err) {
+        console.error('Error al validar nombre de usuario:', err);
+        res.status(500).send('Error al validar nombre de usuario');
+      } else {
+        res.json({ existeUsuario: results[0].existeUsuario > 0 });
+      }
+    });
+  });
+  
   
   app.get('/api/obtenerReservas', (req, res) => {
     const sql = 'SELECT * FROM Reserva';
