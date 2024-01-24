@@ -62,16 +62,16 @@ La base del proyecto se ve algo similar a esto:
 
 my-vue-project/
 - public/
-   |-- index.html
+   - index.html
 - src/
-   |-- assets/
-   |   |-- logo.png
-   |-- components/
-   |   |-- HelloWorld.vue
-   |-- views/
-   |   |-- Home.vue
-   |-- App.vue
-   |-- main.js
+   - assets/
+      - logo.png
+   - components/
+      - HelloWorld.vue
+   - views/
+      - Home.vue
+   - App.vue
+   - main.js
 - package.json
 - README.md
 
