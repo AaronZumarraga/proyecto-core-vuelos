@@ -58,7 +58,7 @@ npm start
 
 Con el programa escrito y estos servicios arriba podremos ver como se guarda la informacion en la base de datos.
 
-La base del proyecto se ve algo similar a esto:
+La base del proyecto en caprteas y archivos se ve algo similar a esto:
 
 my-vue-project/
 - public/
