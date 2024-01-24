@@ -61,9 +61,9 @@ Con el programa escrito y estos servicios arriba podremos ver como se guarda la 
 La base del proyecto se ve algo similar a esto:
 
 my-vue-project/
--- public/
+- public/
    |-- index.html
--- src/
+- src/
    |-- assets/
    |   |-- logo.png
    |-- components/
@@ -72,8 +72,8 @@ my-vue-project/
    |   |-- Home.vue
    |-- App.vue
    |-- main.js
--- package.json
--- README.md
+- package.json
+- README.md
 
 ### Enlaces de ayuda
 Ver [Documentacion Vuejs](https://vuejs.org/guide/introduction.html).
