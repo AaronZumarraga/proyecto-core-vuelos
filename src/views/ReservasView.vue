@@ -5,6 +5,7 @@
     <button @click="mostrarVerReservas">Ver reservas</button>
     <button @click="mostrarEstadisticas">Ver estadisticas</button>
     <button @click="mostrarUsuarios">Ver usuarios con reservas</button>
+    <button @click="mostrarCalificaciones">Calificar</button>
 
     <!-- Contenido dinámico según la opción seleccionada -->
     <div v-if="mostrarContenido">
@@ -93,10 +94,6 @@
         </ul>
       </section>
 
-
-
-
-
       <section v-if="currentPage === 'ver-usuarios-con-mas-reservas'">
         <h2>Usuarios con Más Reservas</h2>
         <label for="start">Fecha de inicio:</label>
@@ -112,10 +109,27 @@
           <strong>Total de Reservas:</strong> {{ usuario.TotalReservas }}<br>
           <hr>
         </li>
-
       </section>
 
-
+      <!-- Sección de comentarios y calificaciones -->
+      <section v-if="currentPage === 'calificaciones-comentarios'">
+        <h2>Calificaciones y Comentarios</h2>
+        <!-- Mostrar las calificaciones y comentarios existentes -->
+        <div v-for="comentario in comentariosCalificaciones" :key="comentario.ID_ComentarioCalificacion">
+          <p>Calificación: {{ comentario.Calificacion }}</p>
+          <p>Comentario: {{ comentario.Comentario }}</p>
+          <p>Fecha: {{ comentario.Fecha }}</p>
+          <hr>
+        </div>
+        <!-- Formulario para agregar una nueva calificación y comentario -->
+        <form @submit.prevent="agregarCalificacionComentario">
+          <label for="calificacion">Calificación:</label>
+          <input v-model="nuevaCalificacion" type="number" min="1" max="5" required />
+          <label for="comentario">Comentario:</label>
+          <textarea v-model="nuevoComentario" required></textarea>
+          <button type="submit">Enviar</button>
+        </form>
+      </section>
 
     </div>
   </div>
@@ -137,6 +151,9 @@ export default {
         fechaInicio: '',
         fechaFin: '',
         nombreUsuario: '',
+        comentariosCalificaciones: [], // Para almacenar las calificaciones y comentarios existentes
+        nuevaCalificacion: 1,
+        nuevoComentario: '',
       },
       opcionesOrigen: [],
       opcionesDestino: [],
@@ -147,6 +164,9 @@ export default {
       aerolineasConMasReservas: [],
       sumaTotalPrecios: [],
       usuariosConMasReservas: [],
+      comentariosCalificaciones: [], // Nueva estructura de datos para comentarios y calificaciones
+      nuevaCalificacion: 1,
+      nuevoComentario: '',
     };
   },
   methods: {
@@ -170,10 +190,13 @@ export default {
       // Lógica para manejar la búsqueda de vuelos
       console.log('Realizar búsqueda de vuelos con:', this.busqueda);
     },
-
     hacerReserva() {
       // Lógica para manejar la acción de hacer reserva
       console.log('Hacer reserva con:', this.busqueda);
+    },
+    mostrarCalificaciones(){
+      this.mostrarContenido = true;
+      this.currentPage = 'calificaciones-comentarios';
     },
     obtenerOpcionesOrigen() {
       fetch('http://localhost:3000/api/obtenerOpcionesOrigen') // Actualiza la URL según tu configuración del servidor
@@ -216,58 +239,45 @@ export default {
         .catch(error => console.error('Error al obtener opciones de nombre de Aerolínea:', error));
     },
 
-
-
-
-
-
-
     hacerReserva() {
-  const { origen, destino, hora, precio, aerolinea, nombreUsuario } = this.busqueda;
+      const { origen, destino, hora, precio, aerolinea, nombreUsuario } = this.busqueda;
 
-  // Realizar la validación del nombre de usuario
-  fetch(`http://localhost:3000/api/validarNombreUsuario?nombreUsuario=${nombreUsuario}`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.existeUsuario) {
-        // El nombre de usuario existe, proceder con la reserva
-        // Aquí puedes agregar lógica adicional si es necesario antes de realizar la reserva
+      // Realizar la validación del nombre de usuario
+      fetch(`http://localhost:3000/api/validarNombreUsuario?nombreUsuario=${nombreUsuario}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.existeUsuario) {
+            // El nombre de usuario existe, proceder con la reserva
+            // Aquí puedes agregar lógica adicional si es necesario antes de realizar la reserva
 
-        // Realizar la llamada a la API para insertar la reserva
-        fetch('http://localhost:3000/api/hacerReserva', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            origen,
-            destino,
-            hora,
-            precio,
-            aerolinea,
-            nombreUsuario,
-          }),
+            // Realizar la llamada a la API para insertar la reserva
+            fetch('http://localhost:3000/api/hacerReserva', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                origen,
+                destino,
+                hora,
+                precio,
+                aerolinea,
+                nombreUsuario,
+              }),
+            })
+              .then(response => response.json())
+              .then(data => {
+                console.log('Reserva realizada con éxito:', data);
+                // Aquí puedes agregar lógica adicional si es necesario, como mostrar un mensaje de éxito al usuario
+              })
+              .catch(error => console.error('Error al hacer reserva:', error));
+          } else {
+            // El nombre de usuario no existe, muestra un mensaje al usuario
+            console.log('El nombre de usuario no existe. Por favor, regístrese.');
+          }
         })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Reserva realizada con éxito:', data);
-            // Aquí puedes agregar lógica adicional si es necesario, como mostrar un mensaje de éxito al usuario
-          })
-          .catch(error => console.error('Error al hacer reserva:', error));
-      } else {
-        // El nombre de usuario no existe, muestra un mensaje al usuario
-        console.log('El nombre de usuario no existe. Por favor, regístrese.');
-      }
-    })
-    .catch(error => console.error('Error al validar nombre de usuario:', error));
-},
-
-
-
-
-
-
-
+        .catch(error => console.error('Error al validar nombre de usuario:', error));
+    },
 
     verReservas() {
       // Realizar la llamada a la API para obtener las reservas
@@ -279,8 +289,6 @@ export default {
         })
         .catch(error => console.error('Error al obtener reservas:', error));
     },
-
-
 
     mostrarAerolineasConMasReservas() {
       const { fechaInicio, fechaFin } = this;
@@ -296,10 +304,6 @@ export default {
         .catch(error => console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', error));
     },
 
-
-
-
-
     mostrarUsuariosConMasReservas() {
       // Realizar la llamada a la API para obtener los usuarios con más reservas
       fetch(`http://localhost:3000/api/usuariosConMasReservas?fechaInicio=${this.fechaInicio}&fechaFin=${this.fechaFin}`)
@@ -311,8 +315,43 @@ export default {
         .catch(error => console.error('Error al obtener usuarios con más reservas:', error));
     },
 
+    // Obtener calificaciones y comentarios por vuelo
+    obtenerCalificacionesComentarios(idVuelo) {
+      fetch(`http://localhost:3000/api/calificacionesComentarios/${idVuelo}`)
+        .then(response => response.json())
+        .then(data => {
+          this.comentariosCalificaciones = data;
+        })
+        .catch(error => console.error('Error al obtener calificaciones y comentarios:', error));
+    },
 
+    // Agregar nueva calificación y comentario
+    agregarCalificacionComentario() {
+      const { idVuelo, idAerolinea, idPasajero } = this.busqueda;
+      const { nuevaCalificacion, nuevoComentario } = this;
 
+      // Realizar la llamada a la API para agregar la calificación y comentario
+      fetch('http://localhost:3000/api/calificarComentar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idVuelo,
+          idAerolinea,
+          idPasajero,
+          calificacion: nuevaCalificacion,
+          comentario: nuevoComentario,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Calificación y comentario agregados con éxito:', data);
+          // Actualizar la lista de calificaciones y comentarios después de agregar uno nuevo
+          this.obtenerCalificacionesComentarios(idVuelo);
+        })
+        .catch(error => console.error('Error al agregar calificación y comentario:', error));
+    },
   },
   mounted() {
     // Llamada al método para obtener las opciones de origen al cargar el componente
