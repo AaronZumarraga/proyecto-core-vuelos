@@ -54,11 +54,17 @@
               {{ option }}
             </option>
           </select>
+
+          <!-- Nuevos campos para la reserva -->
+          <label for="fechaReserva">Fecha de Reserva:</label>
+          <input type="datetime-local" v-model="busqueda.fechaReserva" required />
+
           <!-- Botón para hacer la reserva -->
           <button type="button" @click="hacerReserva">Hacer Reserva</button>
         </form>
       </section>
 
+      <!-- Sección para ver reservas -->
       <section v-if="currentPage === 'ver-reservas'">
         <h2>Ver Reservas</h2>
         <ul>
@@ -74,7 +80,7 @@
         </ul>
       </section>
 
-
+      <!-- Sección para ver aerolíneas con más reservas -->
       <section v-if="currentPage === 'ver-aerolineas-con-mas-reservas'">
         <h2>Aerolíneas con Más Reservas</h2>
         <label for="start">Fecha de Inicio:</label>
@@ -94,16 +100,14 @@
         </ul>
       </section>
 
+      <!-- Sección para ver usuarios con más reservas -->
       <section v-if="currentPage === 'ver-usuarios-con-mas-reservas'">
         <h2>Usuarios con Más Reservas</h2>
         <label for="start">Fecha de inicio:</label>
         <input type="date" v-model="fechaInicio" name="start" min="2024-01-01" max="2030-12-31" />
-
         <label for="end">Fecha de fin:</label>
         <input type="date" v-model="fechaFin" name="end" min="2024-01-01" max="2030-12-31" />
-
         <button @click="mostrarUsuariosConMasReservas">Mostrar Usuarios</button>
-
         <li v-for="(usuario, index) in usuariosConMasReservas" :key="index">
           <strong>Usuario:</strong> {{ usuario.Nombre_Usuario }}<br>
           <strong>Total de Reservas:</strong> {{ usuario.TotalReservas }}<br>
@@ -111,9 +115,10 @@
         </li>
       </section>
 
-      <!-- Sección de comentarios y calificaciones -->
+      <!-- Sección para calificaciones y comentarios -->
       <section v-if="currentPage === 'calificaciones-comentarios'">
         <h2>Calificaciones y Comentarios</h2>
+
         <!-- Mostrar las calificaciones y comentarios existentes -->
         <div v-for="comentario in comentariosCalificaciones" :key="comentario.ID_ComentarioCalificacion">
           <p>Calificación: {{ comentario.Calificacion }}</p>
@@ -121,6 +126,7 @@
           <p>Fecha: {{ comentario.Fecha }}</p>
           <hr>
         </div>
+
         <!-- Formulario para agregar una nueva calificación y comentario -->
         <form @submit.prevent="agregarCalificacionComentario">
           <label for="calificacion">Calificación:</label>
@@ -130,6 +136,7 @@
           <button type="submit">Enviar</button>
         </form>
       </section>
+
 
     </div>
   </div>
@@ -151,7 +158,7 @@ export default {
         fechaInicio: '',
         fechaFin: '',
         nombreUsuario: '',
-        comentariosCalificaciones: [], // Para almacenar las calificaciones y comentarios existentes
+        comentariosCalificaciones: [],
         nuevaCalificacion: 1,
         nuevoComentario: '',
       },
@@ -164,7 +171,7 @@ export default {
       aerolineasConMasReservas: [],
       sumaTotalPrecios: [],
       usuariosConMasReservas: [],
-      comentariosCalificaciones: [], // Nueva estructura de datos para comentarios y calificaciones
+      comentariosCalificaciones: [],
       nuevaCalificacion: 1,
       nuevoComentario: '',
     };
@@ -187,70 +194,45 @@ export default {
       this.currentPage = 'ver-usuarios-con-mas-reservas';
     },
     buscarVuelos() {
-      // Lógica para manejar la búsqueda de vuelos
       console.log('Realizar búsqueda de vuelos con:', this.busqueda);
     },
     hacerReserva() {
-      // Lógica para manejar la acción de hacer reserva
       console.log('Hacer reserva con:', this.busqueda);
     },
-    mostrarCalificaciones(){
+    mostrarCalificaciones() {
       this.mostrarContenido = true;
       this.currentPage = 'calificaciones-comentarios';
     },
     obtenerOpcionesOrigen() {
-      fetch('http://localhost:3000/api/obtenerOpcionesOrigen') // Actualiza la URL según tu configuración del servidor
-        .then(response => response.json())
-        .then(data => {
-          this.opcionesOrigen = data;
-        })
-        .catch(error => console.error('Error al obtener opciones de origen:', error));
+      this.fetchOpciones('obtenerOpcionesOrigen', 'opcionesOrigen');
     },
     obtenerOpcionesDestino() {
-      fetch('http://localhost:3000/api/obtenerOpcionesDestino') // Actualiza la URL según tu configuración del servidor
-        .then(response => response.json())
-        .then(data => {
-          this.opcionesDestino = data;
-        })
-        .catch(error => console.error('Error al obtener opciones de destino:', error));
+      this.fetchOpciones('obtenerOpcionesDestino', 'opcionesDestino');
     },
     obtenerOpcionesHora() {
-      fetch('http://localhost:3000/api/obtenerOpcionesHora') // Actualiza la URL según tu configuración del servidor
-        .then(response => response.json())
-        .then(data => {
-          this.opcionesHora = data;
-        })
-        .catch(error => console.error('Error al obtener opciones de hora:', error));
+      this.fetchOpciones('obtenerOpcionesHora', 'opcionesHora');
     },
     obtenerOpcionesPrecio() {
-      fetch('http://localhost:3000/api/obtenerOpcionesPrecio') // Actualiza la URL según tu configuración del servidor
-        .then(response => response.json())
-        .then(data => {
-          this.opcionesPrecio = data;
-        })
-        .catch(error => console.error('Error al obtener opciones de precio:', error));
+      this.fetchOpciones('obtenerOpcionesPrecio', 'opcionesPrecio');
     },
     obtenerOpcionesAerolinea() {
-      fetch('http://localhost:3000/api/obtenerOpcionesAerolinea') // Actualiza la URL según tu configuración del servidor
+      this.fetchOpciones('obtenerOpcionesAerolinea', 'opcionesAerolinea');
+    },
+    fetchOpciones(endpoint, dataProperty) {
+      fetch(`http://localhost:3000/api/${endpoint}`)
         .then(response => response.json())
         .then(data => {
-          this.opcionesAerolinea = data;
+          this[dataProperty] = data;
         })
-        .catch(error => console.error('Error al obtener opciones de nombre de Aerolínea:', error));
+        .catch(error => console.error(`Error al obtener opciones de ${dataProperty}:`, error));
     },
-
     hacerReserva() {
       const { origen, destino, hora, precio, aerolinea, nombreUsuario } = this.busqueda;
 
-      // Realizar la validación del nombre de usuario
       fetch(`http://localhost:3000/api/validarNombreUsuario?nombreUsuario=${nombreUsuario}`)
         .then(response => response.json())
         .then(data => {
           if (data.existeUsuario) {
-            // El nombre de usuario existe, proceder con la reserva
-            // Aquí puedes agregar lógica adicional si es necesario antes de realizar la reserva
-
-            // Realizar la llamada a la API para insertar la reserva
             fetch('http://localhost:3000/api/hacerReserva', {
               method: 'POST',
               headers: {
@@ -268,19 +250,15 @@ export default {
               .then(response => response.json())
               .then(data => {
                 console.log('Reserva realizada con éxito:', data);
-                // Aquí puedes agregar lógica adicional si es necesario, como mostrar un mensaje de éxito al usuario
               })
               .catch(error => console.error('Error al hacer reserva:', error));
           } else {
-            // El nombre de usuario no existe, muestra un mensaje al usuario
             console.log('El nombre de usuario no existe. Por favor, regístrese.');
           }
         })
         .catch(error => console.error('Error al validar nombre de usuario:', error));
     },
-
     verReservas() {
-      // Realizar la llamada a la API para obtener las reservas
       fetch('http://localhost:3000/api/obtenerReservas')
         .then(response => response.json())
         .then(data => {
@@ -289,23 +267,19 @@ export default {
         })
         .catch(error => console.error('Error al obtener reservas:', error));
     },
-
     mostrarAerolineasConMasReservas() {
       const { fechaInicio, fechaFin } = this;
 
-      // Realizar la llamada a la API para obtener las aerolíneas con más reservas y la sumatoria de precios
       fetch(`http://localhost:3000/api/aerolineasConMasReservas?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`)
         .then(response => response.json())
         .then(data => {
           this.aerolineasConMasReservas = data;
-          this.calcularSumaTotalPrecios(); // Calcular la sumatoria de precios
+          this.calcularSumaTotalPrecios();
           console.log('Aerolíneas con más reservas y sumatoria de precios obtenidas con éxito:', this.aerolineasConMasReservas, this.sumaTotalPrecios);
         })
         .catch(error => console.error('Error al obtener aerolíneas con más reservas y sumatoria de precios:', error));
     },
-
     mostrarUsuariosConMasReservas() {
-      // Realizar la llamada a la API para obtener los usuarios con más reservas
       fetch(`http://localhost:3000/api/usuariosConMasReservas?fechaInicio=${this.fechaInicio}&fechaFin=${this.fechaFin}`)
         .then(response => response.json())
         .then(data => {
@@ -314,8 +288,6 @@ export default {
         })
         .catch(error => console.error('Error al obtener usuarios con más reservas:', error));
     },
-
-    // Obtener calificaciones y comentarios por vuelo
     obtenerCalificacionesComentarios(idVuelo) {
       fetch(`http://localhost:3000/api/calificacionesComentarios/${idVuelo}`)
         .then(response => response.json())
@@ -324,13 +296,10 @@ export default {
         })
         .catch(error => console.error('Error al obtener calificaciones y comentarios:', error));
     },
-
-    // Agregar nueva calificación y comentario
     agregarCalificacionComentario() {
       const { idVuelo, idAerolinea, idPasajero } = this.busqueda;
       const { nuevaCalificacion, nuevoComentario } = this;
 
-      // Realizar la llamada a la API para agregar la calificación y comentario
       fetch('http://localhost:3000/api/calificarComentar', {
         method: 'POST',
         headers: {
@@ -347,14 +316,12 @@ export default {
         .then(response => response.json())
         .then(data => {
           console.log('Calificación y comentario agregados con éxito:', data);
-          // Actualizar la lista de calificaciones y comentarios después de agregar uno nuevo
           this.obtenerCalificacionesComentarios(idVuelo);
         })
         .catch(error => console.error('Error al agregar calificación y comentario:', error));
     },
   },
   mounted() {
-    // Llamada al método para obtener las opciones de origen al cargar el componente
     this.obtenerOpcionesOrigen();
     this.obtenerOpcionesDestino();
     this.obtenerOpcionesHora();
