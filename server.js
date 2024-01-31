@@ -225,6 +225,7 @@ app.get('/api/usuariosConMasReservas', (req, res) => {
   });
 });
 
+// Obtener calificaciones y comentarios para un vuelo específico
 app.get('/api/calificacionesComentarios/:idVuelo', (req, res) => {
   const idVuelo = req.params.idVuelo;
 
@@ -238,6 +239,7 @@ app.get('/api/calificacionesComentarios/:idVuelo', (req, res) => {
   });
 });
 
+// Agregar calificación y comentario
 app.post('/api/calificarComentar', (req, res) => {
   const { idVuelo, idPasajero, calificacion, comentario } = req.body;
 

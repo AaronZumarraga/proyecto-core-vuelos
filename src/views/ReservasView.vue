@@ -118,6 +118,7 @@
       <!-- Sección para calificaciones y comentarios -->
       <section v-if="currentPage === 'calificaciones-comentarios'">
         <h2>Calificaciones y Comentarios</h2>
+
         <!-- Mostrar las calificaciones y comentarios existentes -->
         <div v-for="comentario in comentariosCalificaciones" :key="comentario.ID_ComentarioCalificacion">
           <p>Calificación: {{ comentario.Calificacion }}</p>
@@ -125,6 +126,7 @@
           <p>Fecha: {{ comentario.Fecha }}</p>
           <hr>
         </div>
+
         <!-- Formulario para agregar una nueva calificación y comentario -->
         <form @submit.prevent="agregarCalificacionComentario">
           <label for="calificacion">Calificación:</label>
@@ -134,6 +136,7 @@
           <button type="submit">Enviar</button>
         </form>
       </section>
+
 
     </div>
   </div>
@@ -196,7 +199,7 @@ export default {
     hacerReserva() {
       console.log('Hacer reserva con:', this.busqueda);
     },
-    mostrarCalificaciones(){
+    mostrarCalificaciones() {
       this.mostrarContenido = true;
       this.currentPage = 'calificaciones-comentarios';
     },
