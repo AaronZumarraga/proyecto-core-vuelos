@@ -54,6 +54,11 @@
               {{ option }}
             </option>
           </select>
+
+          <!-- Nuevos campos para la reserva -->
+          <label for="fechaReserva">Fecha de Reserva:</label>
+          <input type="datetime-local" v-model="busqueda.fechaReserva" required />
+
           <!-- Botón para hacer la reserva -->
           <button type="button" @click="hacerReserva">Hacer Reserva</button>
         </form>
