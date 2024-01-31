@@ -123,20 +123,33 @@
         <div v-for="comentario in comentariosCalificaciones" :key="comentario.ID_ComentarioCalificacion">
           <p>Calificación: {{ comentario.Calificacion }}</p>
           <p>Comentario: {{ comentario.Comentario }}</p>
+          <p>Aerolínea: {{ comentario.Aerolinea }}</p>
           <p>Fecha: {{ comentario.Fecha }}</p>
           <hr>
         </div>
+
+        <!-- Botón para obtener y mostrar comentarios existentes -->
+        <button @click="mostrarComentariosExistentes">Mostrar Comentarios Existentes</button>
 
         <!-- Formulario para agregar una nueva calificación y comentario -->
         <form @submit.prevent="agregarCalificacionComentario">
           <label for="calificacion">Calificación:</label>
           <input v-model="nuevaCalificacion" type="number" min="1" max="5" required />
+
           <label for="comentario">Comentario:</label>
           <textarea v-model="nuevoComentario" required></textarea>
+
+          <!-- Nuevo campo para seleccionar aerolínea -->
+          <label for="aerolinea">Aerolínea:</label>
+          <select v-model="nuevaAerolinea" required>
+            <option v-for="aerolinea in opcionesAerolinea" :key="aerolinea" :value="aerolinea">
+              {{ aerolinea }}
+            </option>
+          </select>
+
           <button type="submit">Enviar</button>
         </form>
       </section>
-
 
     </div>
   </div>
@@ -172,6 +185,8 @@ export default {
       sumaTotalPrecios: [],
       usuariosConMasReservas: [],
       comentariosCalificaciones: [],
+      calificacionesComentarios: [],
+      comentariosExistentes: [], // Nuevo array para almacenar comentarios existentes
       nuevaCalificacion: 1,
       nuevoComentario: '',
     };
@@ -292,13 +307,14 @@ export default {
       fetch(`http://localhost:3000/api/calificacionesComentarios/${idVuelo}`)
         .then(response => response.json())
         .then(data => {
-          this.comentariosCalificaciones = data;
+          this.comentariosExistentes = data;
+          console.log('Calificaciones y comentarios obtenidos con éxito:', this.comentariosExistentes);
         })
         .catch(error => console.error('Error al obtener calificaciones y comentarios:', error));
     },
     agregarCalificacionComentario() {
       const { idVuelo, idAerolinea, idPasajero } = this.busqueda;
-      const { nuevaCalificacion, nuevoComentario } = this;
+      const { nuevaCalificacion, nuevoComentario, nuevaAerolinea } = this;
 
       fetch('http://localhost:3000/api/calificarComentar', {
         method: 'POST',
@@ -311,14 +327,25 @@ export default {
           idPasajero,
           calificacion: nuevaCalificacion,
           comentario: nuevoComentario,
+          aerolinea: nuevaAerolinea,
         }),
       })
         .then(response => response.json())
         .then(data => {
           console.log('Calificación y comentario agregados con éxito:', data);
+          // Después de agregar el comentario, obtén la lista actualizada de comentarios
           this.obtenerCalificacionesComentarios(idVuelo);
         })
         .catch(error => console.error('Error al agregar calificación y comentario:', error));
+    },
+    mostrarCalificacionesComentarios() {
+      fetch('http://localhost:3000/api/obtenerCalificacionesComentarios')
+        .then(response => response.json())
+        .then(data => {
+          this.calificacionesComentarios = data;
+          console.log('Calificaciones y comentarios obtenidos con éxito:', this.calificacionesComentarios);
+        })
+        .catch(error => console.error('Error al obtener calificaciones y comentarios:', error));
     },
   },
   mounted() {
