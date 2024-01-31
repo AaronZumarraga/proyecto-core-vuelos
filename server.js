@@ -225,7 +225,25 @@ app.get('/api/usuariosConMasReservas', (req, res) => {
   });
 });
 
-// Obtener calificaciones y comentarios para un vuelo específico
+// En el endpoint para agregar calificación y comentario
+app.post('/api/calificarComentar', (req, res) => {
+  const { idVuelo, idPasajero, calificacion, comentario, aerolinea } = req.body;
+
+  connection.query(
+    'INSERT INTO CalificacionesComentarios (idVuelo, idPasajero, Calificacion, Comentario, Fecha, Aerolinea) VALUES (?, ?, ?, ?, NOW(), ?)',
+    [idVuelo, idPasajero, calificacion, comentario, aerolinea],
+    (error, results) => {
+      if (error) {
+        console.error('Error al agregar calificación y comentario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+      } else {
+        res.json({ mensaje: 'Calificación y comentario agregados con éxito' });
+      }
+    }
+  );
+});
+
+// Actualiza la consulta para obtener calificaciones y comentarios
 app.get('/api/calificacionesComentarios/:idVuelo', (req, res) => {
   const idVuelo = req.params.idVuelo;
 
@@ -239,22 +257,29 @@ app.get('/api/calificacionesComentarios/:idVuelo', (req, res) => {
   });
 });
 
-// Agregar calificación y comentario
-app.post('/api/calificarComentar', (req, res) => {
-  const { idVuelo, idPasajero, calificacion, comentario } = req.body;
-
-  connection.query(
-    'INSERT INTO CalificacionesComentarios (idVuelo, idPasajero, Calificacion, Comentario, Fecha) VALUES (?, ?, ?, ?, NOW())',
-    [idVuelo, idPasajero, calificacion, comentario],
-    (error, results) => {
-      if (error) {
-        console.error('Error al agregar calificación y comentario:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-      } else {
-        res.json({ mensaje: 'Calificación y comentario agregados con éxito' });
-      }
+// Asegúrate de agregar esto en tu servidor Node.js
+app.get('/api/calificacionesComentariosExistente', (req, res) => {
+  connection.query('SELECT * FROM CalificacionesComentarios', (error, results) => {
+    if (error) {
+      console.error('Error al obtener calificaciones y comentarios existentes:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+      res.json(results);
     }
-  );
+  });
+});
+
+app.get('/api/obtenerCalificacionesComentarios', (req, res) => {
+  const sql = 'SELECT * FROM CalificacionesComentarios';
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error al obtener calificaciones y comentarios:', err);
+      res.status(500).send('Error al obtener calificaciones y comentarios');
+    } else {
+      res.json(results);
+    }
+  });
 });
 
 app.listen(port, () => {
